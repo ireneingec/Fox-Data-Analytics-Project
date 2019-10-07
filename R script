@@ -1,0 +1,49 @@
+#Project: Fox Data Analytics
+#Data Model: Financial Technology Adoption in several countries (2015-2019)
+#Data Source: EY FinTech Australia Census 2019
+#Name: Irene Inge Christina
+
+FinTechno<-read.csv("~/Downloads/FinTech Adoption.csv")
+print(FinTechno)
+colnames(FinTechno)=c("Countries", "Year", "No.Adoption") #changing the columns names
+print(FinTechno)
+library(dplyr)
+#Find the mean number of adoption in each of the countries in the dataframe
+meanAdoption=aggregate(FinTechno[3], FinTechno[1],mean)
+print(meanAdoption)
+#Find the maximum no. of adoption in 2015,2017,2019
+by(FinTechno, FinTechno[2], function(df)df[which.max(df[,3]),])
+#Analysation:
+#     In 2015, Hongkong has the highest number of Financial Technology adoption of 29%.
+#     Whilst in 2017, UK has the highest number of Financial Technology adoption of 42% 
+#     and the number of percentage rised to 71% and UK has maintained its position to be
+#     the highest number of Financial Technology adoption in 2019
+
+#Find the minimum no.of adoption in 2015,2017,2019
+by(FinTechno, FinTechno[2], function(df)df[which.min(df[,3]),])
+#Analysation:
+#    In 2015, Canada rank the lowest for Financial Technology adoption which was only 8% as well as 
+#    in 2017. Although the number of Financial Technology adoption in Canada has rised, Canada still
+#    in the lowest position of Financial Technology adoption. In 2019, suprisingly, US has the lowest 
+#    of Financial Technology adoption among the other countries. 
+
+#Find number of Financial Technology Adoption in Australia from 2015 to 2019
+Australia_FinTech=FinTechno%>%filter(FinTechno$Countries=="Australia")
+
+#DATA VISUALISATION
+
+ggplot_FinTech=ggplot(FinTechno, aes(x=FinTechno$Year, y=FinTechno$No.Adoption, color=FinTechno$Countries))+geom_point()+ggtitle("Financial Technology Adoption 2015-2019")+ylab("No. of Financial Technology Adoption")+xlab("Year")
+ggplot_FinTech
+#Save the ggplot
+ggsave("Financial Technology Adoption in 2015-2019 (Combined).jpg",ggplot_FinTech )
+
+#Break graphs by year..
+ggplot_Yearbreakdown=ggplot(FinTechno)+geom_bar(mapping=aes(x=Countries, y=No.Adoption, fill=Countries), stat="identity")+facet_wrap(~FinTechno$Year)
+#Add title
+ggplot_Yearbreakdown= ggplot_Yearbreakdown+ggtitle("Financial Technology Adoption (Year breakdown)")
+#Add background color for legend
+#ggplot_Yearbreakdown= ggplot_Yearbrakdown+theme(legend.background = element_rect(fill="lightgrey", size=0.5, linetype = "solid"))
+#Show the graphics
+ggplot_Yearbreakdown
+#Save the ggplot
+ggsave("Financial Technology Adoption in 2015-2019 (Year Breakdown).jpg",ggplot_Yearbreakdown )
